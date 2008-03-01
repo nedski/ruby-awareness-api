@@ -2,6 +2,8 @@ require 'open-uri'
 require 'rexml/document'
 include REXML
 
+# AwAPI docs at http://code.google.com/apis/feedburner/awareness_api.html
+
 class AwarenessApi
   def get_feed_data(options)
     option_string = parse_options(options)
@@ -41,27 +43,39 @@ class AwarenessApi
       for feed_node in rsp_node.elements
         feed = Feed.new
         
-        feed.id = feed_node.attributes['id']
-        feed.uri = feed_node.attributes['uri']
+        feed_node.attributes.each do |key,value|
+          feed.send(key+"=", value)
+        end
+        
+        # feed.id = feed_node.attributes['id']
+        # feed.uri = feed_node.attributes['uri']
         
         response.feeds << feed
         
         for entry_node in feed_node.elements
           entry = Entry.new
           
-          entry.date = entry_node.attributes['date']
-          entry.circulation = entry_node.attributes['circulation']
-          entry.hits = entry_node.attributes['hits']
+          entry_node.attributes.each do |key,value|
+            entry.send(key+"=", value)
+          end
+          
+          # entry.date = entry_node.attributes['date']
+          # entry.circulation = entry_node.attributes['circulation']
+          # entry.hits = entry_node.attributes['hits']
           
           feed.entries << entry
           
           for item_node in entry_node.elements
             item = Item.new
             
-            item.title = item_node.attributes['title']
-            item.url = item_node.attributes['url']
-            item.itemviews = item_node.attributes['itemviews']
-            item.clickthroughs = item_node.attributes['clickthroughs']
+            item_node.attributes.each do |key,value|
+              item.send(key+"=", value)
+            end
+            
+            # item.title = item_node.attributes['title']
+            # item.url = item_node.attributes['url']
+            # item.itemviews = item_node.attributes['itemviews']
+            # item.clickthroughs = item_node.attributes['clickthroughs']
             
             entry.items << item
           end
@@ -87,19 +101,19 @@ class AwarenessApi
       output << "Message: #{@message}" if @message
       for feed in @feeds
         output << "-Feed"
-        output << "\t Id: #{feed.id}" if feed.id
-        output << "\t URI: #{feed.uri}" if feed.uri
+        output << "  Id: #{feed.id}" if feed.id
+        output << "  URI: #{feed.uri}" if feed.uri
         for entry in feed.entries
-          output << "\t-Entry"
-          output << "\t\t Date: #{entry.date}" if entry.date
-          output << "\t\t Circulation: #{entry.circulation}" if entry.circulation
-          output << "\t\t Hits: #{entry.hits}" if entry.hits
+          output << "  -Entry"
+          output << "    Date: #{entry.date}" if entry.date
+          output << "    Circulation: #{entry.circulation}" if entry.circulation
+          output << "    Hits: #{entry.hits}" if entry.hits
           for item in entry.items
-            output << "\t\t-Item"
-            output << "\t\t\tTitle: #{item.title}" if item.title
-            output << "\t\t\tURL: #{item.url}" if item.url
-            output << "\t\t\tItemViews: #{item.itemviews}" if item.itemviews
-            output << "\t\t\tClickthoughs: #{item.clickthroughs}" if item.clickthroughs
+            output << "    -Item"
+            output << "      Title: #{item.title}" if item.title
+            output << "      URL: #{item.url}" if item.url
+            output << "      ItemViews: #{item.itemviews}" if item.itemviews
+            output << "      Clickthoughs: #{item.clickthroughs}" if item.clickthroughs
           end
         end
       end
@@ -109,28 +123,52 @@ class AwarenessApi
   end
   
   class Feed
-    attr_accessor :id, :uri, :entries
+    attr_accessor :id
     
     def initialize
       @entries = []
+      @attributes = []
+    end
+    
+    def method_missing(method, *params, &block)
+      method = method.to_s
+      if method =~ /=/
+        self.instance_variable_set("@#{method[0..-2]}", params)
+      else
+        self.instance_variable_get("@#{method}")
+      end
     end
   end
   
   class Entry
-    attr_accessor :date, :circulation, :hits, :items
-    
     def initialize
       @items = []
+    end
+    
+    def method_missing(method, *params, &block)
+      method = method.to_s
+      if method =~ /=/
+        self.instance_variable_set("@#{method[0..-2]}", params)
+      else
+        self.instance_variable_get("@#{method}")
+      end
     end
   end
   
   class Item
-    attr_accessor :title, :url, :itemviews, :clickthroughs
+    def method_missing(method, *params, &block)
+      method = method.to_s
+      if method =~ /=/
+        self.instance_variable_set("@#{method[0..-2]}", params)
+      else
+        self.instance_variable_get("@#{method}")
+      end
+    end
   end
 end
 
-# rawapi = AwarenessApi.new
-# opts = {:uri => 'CommonThread', :dates => '2007-01-18,2007-01-21'}
-# 
-# puts rawapi.get_feed_data(opts)
-# puts rawapi.get_item_data(opts)
+rawapi = AwarenessApi.new
+opts = {:uri => 'CommonThread'}
+
+puts rawapi.get_feed_data(opts)
+puts rawapi.get_item_data(opts)
