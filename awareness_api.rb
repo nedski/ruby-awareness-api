@@ -6,6 +6,7 @@ include REXML
 
 class AwarenessApi
   def get_feed_data(options)
+    raise "options must include a feed id or uri" unless options[:id] or options[:uri]
     option_string = parse_options(options)
     
     response_xml = open("http://api.feedburner.com/awareness/1.0/GetFeedData?#{option_string}").read
@@ -13,16 +14,23 @@ class AwarenessApi
   end
   
   def get_item_data(options)
+    raise "options must include a feed uri" unless options[:uri]
     option_string = parse_options(options)
     
     response_xml = open("http://api.feedburner.com/awareness/1.0/GetItemData?#{option_string}").read
     return parse_xml(response_xml)
   end
   
+  def get_resyndication_data(options)
+    raise "options must include a feed uri" unless options[:uri]
+    option_string = parse_options(options)
+    
+    response_xml = open("http://api.feedburner.com/awareness/1.0/GetResyndicationData?#{option_string}").read
+    # return parse_xml(response_xml)
+  end
+  
   private
   def parse_options(options)
-    raise "options must include a feed id or uri" unless options[:id] or options[:uri]
-    
     options[:uri] = nil if options[:id] and options[:uri]
     
     return options.collect {|key, value| "#{key}=#{value}" unless value.nil?}.compact.join('&')
