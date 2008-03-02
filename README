@@ -1,0 +1,10 @@
+AwAPI docs at http://code.google.com/apis/feedburner/awareness_api.html
+
+== Example
+
+rawapi = AwarenessApi.new
+opts = {:uri => 'CommonThread'}
+
+puts f = rawapi.get_feed_data(opts)
+puts i = rawapi.get_item_data(opts)
+puts r = rawapi.get_resyndication_data(opts)

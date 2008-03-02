@@ -26,7 +26,7 @@ class AwarenessApi
     option_string = parse_options(options)
     
     response_xml = open("http://api.feedburner.com/awareness/1.0/GetResyndicationData?#{option_string}").read
-    # return parse_xml(response_xml)
+    return parse_xml(response_xml)
   end
   
   private
@@ -55,9 +55,6 @@ class AwarenessApi
           feed.send(key+"=", value)
         end
         
-        # feed.id = feed_node.attributes['id']
-        # feed.uri = feed_node.attributes['uri']
-        
         response.feeds << feed
         
         for entry_node in feed_node.elements
@@ -67,10 +64,6 @@ class AwarenessApi
             entry.send(key+"=", value)
           end
           
-          # entry.date = entry_node.attributes['date']
-          # entry.circulation = entry_node.attributes['circulation']
-          # entry.hits = entry_node.attributes['hits']
-          
           feed.entries << entry
           
           for item_node in entry_node.elements
@@ -79,11 +72,6 @@ class AwarenessApi
             item_node.attributes.each do |key,value|
               item.send(key+"=", value)
             end
-            
-            # item.title = item_node.attributes['title']
-            # item.url = item_node.attributes['url']
-            # item.itemviews = item_node.attributes['itemviews']
-            # item.clickthroughs = item_node.attributes['clickthroughs']
             
             entry.items << item
           end
@@ -109,19 +97,19 @@ class AwarenessApi
       output << "Message: #{@message}" if @message
       for feed in @feeds
         output << "-Feed"
-        output << "  Id: #{feed.id}" if feed.id
-        output << "  URI: #{feed.uri}" if feed.uri
+        feed.attributes.each do |key,val|
+          output << "  #{key}: #{val}"
+        end
         for entry in feed.entries
           output << "  -Entry"
-          output << "    Date: #{entry.date}" if entry.date
-          output << "    Circulation: #{entry.circulation}" if entry.circulation
-          output << "    Hits: #{entry.hits}" if entry.hits
+          entry.attributes.each do |key,val|
+            output << "    #{key}: #{val}"
+          end
           for item in entry.items
             output << "    -Item"
-            output << "      Title: #{item.title}" if item.title
-            output << "      URL: #{item.url}" if item.url
-            output << "      ItemViews: #{item.itemviews}" if item.itemviews
-            output << "      Clickthoughs: #{item.clickthroughs}" if item.clickthroughs
+            item.attributes.each do |key,val|
+              output << "      #{key}: #{val}"
+            end
           end
         end
       end
@@ -130,53 +118,47 @@ class AwarenessApi
     end
   end
   
+  module FeedAttributes
+    def attributes
+      attribute_hash = {}
+      
+      self.instance_variables.each do |var|
+        var_symbol = var[1..-1].to_sym
+        attribute_hash[var_symbol] = self.send(var_symbol) unless self.send(var_symbol).is_a?(Array)
+      end
+      
+      attribute_hash
+    end
+    
+    def method_missing(method, *params, &block)
+      method = method.to_s
+      if method =~ /=/
+        self.instance_variable_set("@#{method[0..-2]}", params[0])
+      else
+        self.instance_variable_get("@#{method}")
+      end
+    end
+  end
+  
   class Feed
+    include FeedAttributes
+    
     attr_accessor :id
     
     def initialize
       @entries = []
-      @attributes = []
-    end
-    
-    def method_missing(method, *params, &block)
-      method = method.to_s
-      if method =~ /=/
-        self.instance_variable_set("@#{method[0..-2]}", params)
-      else
-        self.instance_variable_get("@#{method}")
-      end
     end
   end
   
   class Entry
+    include FeedAttributes
+    
     def initialize
       @items = []
-    end
-    
-    def method_missing(method, *params, &block)
-      method = method.to_s
-      if method =~ /=/
-        self.instance_variable_set("@#{method[0..-2]}", params)
-      else
-        self.instance_variable_get("@#{method}")
-      end
     end
   end
   
   class Item
-    def method_missing(method, *params, &block)
-      method = method.to_s
-      if method =~ /=/
-        self.instance_variable_set("@#{method[0..-2]}", params)
-      else
-        self.instance_variable_get("@#{method}")
-      end
-    end
+    include FeedAttributes
   end
 end
-
-rawapi = AwarenessApi.new
-opts = {:uri => 'CommonThread'}
-
-puts rawapi.get_feed_data(opts)
-puts rawapi.get_item_data(opts)
