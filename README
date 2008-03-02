@@ -1,10 +1,13 @@
 AwAPI docs at http://code.google.com/apis/feedburner/awareness_api.html
 
+== What
+
+the Ruby Awareness API (rAwAPI) returns ruby representations for each of the 3 functions available in the FeedBurner Awareness API (AwAPI).
+
 == Example
 
-rawapi = AwarenessApi.new
 opts = {:uri => 'CommonThread'}
 
-puts f = rawapi.get_feed_data(opts)
-puts i = rawapi.get_item_data(opts)
-puts r = rawapi.get_resyndication_data(opts)
+puts AwarenessApi.get_feed_data(opts)
+puts AwarenessApi.get_item_data(opts)
+puts AwarenessApi.get_resyndication_data(opts)
