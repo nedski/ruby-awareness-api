@@ -1,8 +1,21 @@
 AwAPI docs at http://code.google.com/apis/feedburner/awareness_api.html
 
-== What
+== This Library
 
 the Ruby Awareness API (rAwAPI) returns ruby representations for each of the 3 functions available in the FeedBurner Awareness API (AwAPI).
+
+== What is “Awareness?”
+
+Feed Awareness describes the extent and frequency with which a publisher's feed and its content items are consumed, clicked on, and referred to by independent sources (i.e., "syndicated").
+
+The following data characterizes Feed Awareness:
+
+    * Feed Circulation and Hits: Circulation is a daily measure of feed readership and popularity, recorded over the life of your feed. Hits are a raw measure of request traffic for your feed.
+    * Detailed Item Popularity: The popularity of each item published as determined by itemviews and clickthroughs.
+    * Item Syndication: Redisplay or repurposing of a feed's content on a third party website that generates traffic (as itemviews and clickthroughs).
+
+The reports and charts you see when using The FeedBurner website are based on the same data. Using AwAPI, you can create your own analysis and tracking applications. It's your data. Display it your way!
+
 
 == Example
 

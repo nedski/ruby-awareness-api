@@ -2,9 +2,29 @@ require 'open-uri'
 require 'rexml/document'
 include REXML
 
+# The Ruby Awareness API (rAwAPI) provides a ruby interface to the FeedBurner Awareness API (AwAPI)
+# 
 # AwAPI docs at http://code.google.com/apis/feedburner/awareness_api.html
+# 
+# In rAwAPI calls, date ranges may be expressed as follows:
+# 
+#   * Individual dates always use this format: YYYY-MM-DD
+#   * Date ranges are expressed with a comma: YYYY-MM-D1, YYYY-MM-D7 means all dates between and including D1 and D7
+#   * If a range is specified, the second date must always be later than the first date
+#   * A single date will be interpreted as a range of one date: YYYY-MM-D1 = YYYY-MM-D1, YYYY-MM-D1
+#   * Discrete ranges are separated by a slash: YYYY-MM-D1/YYYY-MM-D5/YYYY-MM-D7,YYYY-MM-D14 means D1 and D5 and all dates between and including D7 and D14. Multiple discrete ranges may also be provided by using multiple date parameters in a single GET request.
+#   * If no date is specified, Yesterday's date is assumed. "Current" is always yesterday's data. "Live" daily data is not yet available.
+#   * An individual date starts at 12am CDT (GMT -5) and ends 12am CDT the next day. Custom timezone support is not yet available.
+# 
 
 module AwarenessApi
+  # Current Basic Feed Awareness Data
+  # 
+  # Arguments
+  #   uri     The URI of the feed (same as http://feeds.feedburner.com/<feeduri>) Must be used if id is not specified
+  #   id      The FeedBurner id of the feed (visible when editing a feed in your account, e.g., http://www.feedburner.com/fb/a/optimize?id=<id>). May be used instead if uri is not specified.
+  #   dates  	Dates are used to specify the period for which data is need (see note on dates)
+  # 
   def self.get_feed_data(options)
     raise "options must include a feed id or uri" unless options[:id] or options[:uri]
     option_string = parse_options(options)
@@ -13,6 +33,13 @@ module AwarenessApi
     return parse_xml(response_xml)
   end
 
+  # Current Item Awareness Data
+  # 
+  # Arguments
+  #   uri       The URI of the feed (same as http://feeds.feedburner.com/<feeduri>)
+  #   itemurl  	The source URL of item (not the FeedBurner generated URL, but the original source URL). Multiple itemurl parameters may be provided in a single request in order to retrieve additional items.
+  #   dates   	Dates are used to specify the period for which data is need (see note on dates)
+  # 
   def self.get_item_data(options)
     raise "options must include a feed uri" unless options[:uri]
     option_string = parse_options(options)
@@ -21,6 +48,13 @@ module AwarenessApi
     return parse_xml(response_xml)
   end
 
+  # Current Item Resyndication Feed Awareness Data
+  # 
+  # Arguments
+  #   uri       The URI of the feed (same as http://feeds.feedburner.com/<feeduri>)
+  #   itemurl  	The source URL of item (not the FeedBurner generated URL, but the original source URL). Multiple itemurl parameters may be provided in a single request in order to retrieve additional items.
+  #   dates   	Dates are used to specify the period for which data is need (see note on dates)
+  #
   def self.get_resyndication_data(options)
     raise "options must include a feed uri" unless options[:uri]
     option_string = parse_options(options)
