@@ -1,5 +1,3 @@
-Dir[File.join(File.dirname(__FILE__), 'awareness_api/**/*.rb')].sort.each { |lib| require lib }
-
 require 'open-uri'
 require 'rexml/document'
 include REXML
@@ -158,3 +156,5 @@ module AwarenessApi
     end
   end
 end
+
+Dir[File.join(File.dirname(__FILE__), 'awareness_api/**/*.rb')].sort.each { |lib| require lib }
