@@ -2,7 +2,7 @@ AwAPI docs at http://code.google.com/apis/feedburner/awareness_api.html
 
 == This Library
 
-the Ruby Awareness API (rAwAPI) returns ruby representations for each of the 3 functions available in the FeedBurner Awareness API (AwAPI).
+The Ruby Awareness API (rAwAPI) provides a ruby interface to the FeedBurner Awareness API (AwAPI)
 
 == What is “Awareness?”
 
@@ -18,6 +18,8 @@ The reports and charts you see when using The FeedBurner website are based on th
 
 
 == Example
+
+require 'awareness_api'
 
 opts = {:uri => 'CommonThread'}
 
