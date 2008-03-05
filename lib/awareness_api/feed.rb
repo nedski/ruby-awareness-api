@@ -1,6 +1,6 @@
 module AwarenessApi
   class Feed
-    include FeedAttributes
+    include AwarenessApi::FeedAttributes
 
     attr_accessor :id
 

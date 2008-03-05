@@ -19,7 +19,6 @@ include REXML
 #   * If no date is specified, Yesterday's date is assumed. "Current" is always yesterday's data. "Live" daily data is not yet available.
 #   * An individual date starts at 12am CDT (GMT -5) and ends 12am CDT the next day. Custom timezone support is not yet available.
 # 
-
 module AwarenessApi
   ROOT_API_URL = 'http://api.feedburner.com/awareness/1.0/'
   

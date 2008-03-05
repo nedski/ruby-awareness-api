@@ -1,6 +1,6 @@
 module AwarenessApi
   class Item
-    include FeedAttributes
+    include AwarenessApi::FeedAttributes
 
     def initialize
       @referers = []

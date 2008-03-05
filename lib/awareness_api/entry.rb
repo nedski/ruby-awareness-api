@@ -1,6 +1,6 @@
 module AwarenessApi
   class Entry
-    include FeedAttributes
+    include AwarenessApi::FeedAttributes
 
     def initialize
       @items = []

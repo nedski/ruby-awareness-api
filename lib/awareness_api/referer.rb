@@ -1,5 +1,5 @@
 module AwarenessApi
   class Referer
-    include FeedAttributes
+    include AwarenessApi::FeedAttributes
   end
 end
