@@ -4,7 +4,7 @@ AwAPI docs at http://code.google.com/apis/feedburner/awareness_api.html
 
 The Ruby Awareness API (rAwAPI) provides a ruby interface to the FeedBurner Awareness API (AwAPI)
 
-== What is “Awareness?”
+== What is "Awareness?"
 
 Feed Awareness describes the extent and frequency with which a publisher's feed and its content items are consumed, clicked on, and referred to by independent sources (i.e., "syndicated").
 
