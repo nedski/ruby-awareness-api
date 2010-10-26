@@ -1,3 +1,8 @@
+* 0.2.2
+
+Fixed awareness api URL. The old, non-secure feedburner URI was causing
+open-uri to fail on the redirect to the new https google URI.
+
 * 0.2.1
 * 0.1.2
 * 0.1.1
