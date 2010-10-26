@@ -18,7 +18,7 @@ include REXML
 #   * An individual date starts at 12am CDT (GMT -5) and ends 12am CDT the next day. Custom timezone support is not yet available.
 # 
 module AwarenessApi
-  ROOT_API_URL = 'http://api.feedburner.com/awareness/1.0/'
+  ROOT_API_URL = 'https://feedburner.google.com/api/awareness/1.0/'
   
   # 
   # Current Basic Feed Awareness Data
